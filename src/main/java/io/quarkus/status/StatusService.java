@@ -26,23 +26,24 @@ public class StatusService {
     private static final List<Integer> MAIN_ISSUES = Arrays.asList(
             // 15867 // JDK early access
             6588, // Quickstarts native
-            12111, // Core snapshots deployment
-            35716, // Platform snapshots deployment
+            //12111, // Core snapshots deployment
+            //35716, // Platform snapshots deployment
             11515, // code.quarkus.io
             17071, // Sync main documentation to website
             13058, // Release process testing
             19500, // Quarkus QE test suite
             15417, // Quarkus Beefy test suite
             23612, // Quarkus Super Heroes testing
-            26581, // Kubernetes end to end testing
+            // 26581, // Kubernetes end to end testing
             // 26582, // OpenShift end to end testing
-            31837, // Knative end to end testing
+            // 31837, // Knative end to end testing
             32191 // Quarkus updates recipes testing
     );
     private static final String QUARKUS_IO_ORG = "quarkusio";
     private static final String MAIN_REPOSITORY = "quarkus";
 
     private static final String PLATFORM_LABEL = "triage/ci-platform";
+    private static final String REPRODUCIBILITY_CHECKS_LABEL = "triage/ci-reproducibility-checks";
 
     private static final String QUARKIVERSE_ORG = "quarkiverse";
     private static final String QUARKIVERSE_REPOSITORY = "quarkiverse";
@@ -89,6 +90,14 @@ public class StatusService {
         }
         StatusSection mainSection = new StatusSection("Main Builds", mainSectionLines);
 
+        Set<StatusLine> reproducibilityChecksStatusLines = new TreeSet<>();
+        for (Issue issue : gitHubService.findIssuesByLabel(QUARKUS_IO_ORG, MAIN_REPOSITORY, REPRODUCIBILITY_CHECKS_LABEL)) {
+            StatusLine statusLine = fromIssue(issue, -1);
+            reproducibilityChecksStatusLines.add(statusLine);
+        }
+        StatusSection reproducibilityChecksSection = new StatusSection("Reproducibility Checks",
+                reproducibilityChecksStatusLines);
+
         Set<StatusLine> platformStatusLines = new TreeSet<>();
         for (Issue issue : gitHubService.findIssuesByLabel(QUARKUS_IO_ORG, MAIN_REPOSITORY, PLATFORM_LABEL)) {
             StatusLine statusLine = fromIssue(issue, -1);
@@ -117,6 +126,7 @@ public class StatusService {
         StatusSection quarkiverseSection = new StatusSection("Quarkiverse", quarkiverseStatusLines);
 
         sections.put(Status.MAIN_ID, mainSection);
+        sections.put(Status.REPRODUCIBILITY_CHECKS_ID, reproducibilityChecksSection);
         sections.put(Status.PLATFORM_ID, platformSection);
         sections.put(Status.QUARKIVERSE_ID, quarkiverseSection);
 
