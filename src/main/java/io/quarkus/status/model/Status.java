@@ -9,6 +9,7 @@ import io.quarkus.runtime.annotations.RegisterForReflection;
 public record Status(Map<String, StatusSection> sections, LocalDateTime updated) {
 
     public static final String MAIN_ID = "main";
+    public static final String REPRODUCIBILITY_CHECKS_ID = "reproducibility";
     public static final String PLATFORM_ID = "platform";
     public static final String QUARKIVERSE_ID = "quarkiverse";
 
